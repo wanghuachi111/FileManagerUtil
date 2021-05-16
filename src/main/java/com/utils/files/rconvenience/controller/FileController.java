@@ -38,4 +38,10 @@ public class FileController {
         return fileService.calculateTime(FilePath);
     }
 
+    @ApiOperation("递归计算文件夹下所有文件时长")
+    @GetMapping("/addAllTime")
+    public String calculateAllTime(@RequestParam(value = "FilePath") String FilePath) {
+        return fileService.calculateAllTime(FilePath);
+    }
+
 }

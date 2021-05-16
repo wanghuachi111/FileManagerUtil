@@ -36,6 +36,26 @@ public class FileService {
         return "路径: " + FilePath +" 下时长总和为: " + result + "min, 请注意记录!";
     }
 
+    public long calculateAll(String FilePath, long result) {
+        File file = new File(FilePath);
+        File[] arr = file.listFiles();
+        for (File target : arr) {
+            if (target.isDirectory()) {
+                calculateAll(FilePath + "\\" + target.getName(), result);
+//                System.out.println( FilePath + " " + result + " " +i);
+            } else {
+                long num = addTime(target, FilePath);
+                result += num;
+//                System.out.println(FilePath + " " + num + " " +result + " " + i);
+            }
+        }
+        return result;
+    }
+
+    public String calculateAllTime(String FilePath) {
+        return "总时长为: " + calculateAll(FilePath,0) + "min" + ", 请注意记录";
+    }
+
 
 
     public String RenameFiles(String FilePath)  {
@@ -88,14 +108,43 @@ public class FileService {
         try {
             MultimediaInfo m = encoder.getInfo(source);
             long ls = m.getDuration();
-            System.out.println("时长：" + ls + "秒");
+            System.out.println("时长：" + ls + "ms");
             second = ls/1000/60;
-            System.out.println("换算为：" + second + "分");
-            System.out.println("----------------");
         } catch (Exception e) {
             e.printStackTrace();
         }
         return second;
     }
+
+
+    public static long recursiveTraversalFolder(String path, long result) {
+        File folder = new File(path);
+        if (folder.exists()) {
+            File[] fileArr = folder.listFiles();
+            if (null == fileArr || fileArr.length == 0) {
+                System.out.println("文件夹是空的!");
+                return 0;
+
+            } else {
+
+                for (File file : fileArr) {
+                    if (file.isDirectory()) {//是文件夹，继续递归，如果需要重命名文件夹，这里可以做处理
+                        System.out.println("文件夹:" + file.getAbsolutePath() + "，继续递归！");
+                        recursiveTraversalFolder(file.getAbsolutePath(), result);
+                    } else {//是文件，判断是否需要重命名
+                        result += addTime(file, file.getAbsolutePath());
+                    }
+
+                }
+
+            }
+
+        } else {
+            System.out.println("文件不存在!");
+
+        }
+        return result;
+    }
+
 
 }
