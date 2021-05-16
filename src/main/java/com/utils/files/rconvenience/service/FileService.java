@@ -36,6 +36,8 @@ public class FileService {
         return "路径: " + FilePath +" 下时长总和为: " + result + "min, 请注意记录!";
     }
 
+
+    //计算时长
     public long calculateAll(String FilePath, long result) {
         File file = new File(FilePath);
         File[] arr = file.listFiles();
